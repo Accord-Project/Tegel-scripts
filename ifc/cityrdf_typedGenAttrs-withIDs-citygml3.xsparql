@@ -1,0 +1,336 @@
+# XML prefixes
+prefix XSPARQL: <http://xsparql.deri.org/demo/xquery/xsparql.xquery> # to invoke internal function _serialize
+prefix xlink:   <http://www.w3.org/1999/xlink>
+prefix functx:  <http://www.functx.com>
+
+#for gml2
+prefix app: <http://www.opengis.net/citygml/appearance/2.0> 
+prefix bldg: <http://www.opengis.net/citygml/building/2.0> 
+prefix brid: <http://www.opengis.net/citygml/bridge/2.0> 
+prefix core: <http://www.opengis.net/citygml/2.0> 
+prefix dem: <http://www.opengis.net/citygml/relief/2.0> 
+prefix frn: <http://www.opengis.net/citygml/cityfurniture/2.0> 
+prefix gen: <http://www.opengis.net/citygml/generics/2.0> 
+prefix grp: <http://www.opengis.net/citygml/cityobjectgroup/2.0>
+prefix luse: <http://www.opengis.net/citygml/landuse/2.0> 
+prefix tex: <http://www.opengis.net/citygml/texturedsurface/2.0> 
+prefix tran: <http://www.opengis.net/citygml/transportation/2.0> 
+prefix tun: <http://www.opengis.net/citygml/tunnel/2.0> 
+prefix veg: <http://www.opengis.net/citygml/vegetation/2.0> 
+prefix wtr: <http://www.opengis.net/citygml/waterbody/2.0> 
+
+#common prefixes across gml1,gml2,gml3
+prefix ade: <http://www.3dcitydb.org/citygml-ade/2.0/citygml/1.0>
+prefix gml32: <http://www.opengis.net/gml/3.2> 
+prefix gml: <http://www.opengis.net/gml> 
+prefix pbase: <http://www.opengis.net/citygml/profiles/base/2.0> 
+prefix sch: <http://www.ascc.net/xml/schematron> 
+prefix smil20: <http://www.w3.org/2001/SMIL20/> 
+prefix smil20lang: <http://www.w3.org/2001/SMIL20/Language> 
+prefix sos: <http://www.opengis.net/sos/2.0> 
+prefix tsml: <http://www.opengis.net/tsml/1.0>
+prefix xAL20: <urn:oasis:names:tc:ciq:xsdschema:xAL:2.0>
+prefix xAL: <urn:oasis:names:tc:ciq:xsdschema:xAL:3.0> 
+
+
+prefix xsi: <http://www.w3.org/2001/XMLSchema-instance> 
+
+# RDF prefixes
+# prefix for additional predicates to relate CityGML elements to their properties converted to RDF resources in RDF transformation
+prefix x:       <https://graphdb.accordproject.eu/resource/x> 
+
+prefix geo:     <http://www.opengis.net/ont/geosparql#>
+prefix GML:     <http://www.opengis.net/ont/gml#>
+prefix owl:     <http://www.w3.org/2002/07/owl#>
+prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+prefix skos:    <http://www.w3.org/2004/02/skos/core#>
+prefix xsd:     <http://www.w3.org/2001/XMLSchema#>
+
+#prefixes for output, gml3 in CityRDF 
+prefix APP: <http://www.opengis.net/ont/citygml/appearance/3.0/> 
+prefix BLDG: <http://www.opengis.net/ont/citygml/building/3.0/> 
+prefix BRID: <http://www.opengis.net/ont/citygml/bridge/3.0/> 
+prefix CORE: <http://www.opengis.net/ont/citygml/3.0/>
+prefix CON:  <http://www.opengis.net/ont/citygml/construction/3.0/>
+prefix COMMON: <http://www.opengis.net/ont/citygml/common/3.0/>
+prefix DEM: <http://www.opengis.net/ont/citygml/relief/3.0/>
+prefix DYN:  <http://www.opengis.net/ont/citygml/dynamizer/3.0/>
+prefix FRN: <http://www.opengis.net/ont/citygml/cityfurniture/3.0/> 
+prefix GEN: <http://www.opengis.net/ont/citygml/generics/3.0/> 
+prefix GRP: <http://www.opengis.net/ont/citygml/cityobjectgroup/3.0/>
+prefix LUSE: <http://www.opengis.net/ont/citygml/landuse/3.0/>
+prefix TEX: <http://www.opengis.net/ont/citygml/texturedsurface/3.0/> 
+prefix TRAN: <http://www.opengis.net/ont/citygml/transportation/3.0/> 
+prefix TUN: <http://www.opengis.net/ont/citygml/tunnel/3.0/> 
+prefix VEG: <http://www.opengis.net/ont/citygml/vegetation/3.0/> 
+prefix WTR: <http://www.opengis.net/ont/citygml/waterbody/3.0/> 
+
+declare variable $input as xs:string external;
+
+declare variable $classnameMap := (
+  #
+  # for gml2
+  <local:map><bldg:IntBuildingInstallation/><BLDG:IntBuildingInstallation/></local:map>,
+  <local:map><bldg:BuildingPart/><BLDG:BuildingPart/></local:map>,
+  <local:map><bldg:Building/><BLDG:Building/></local:map>,
+  <local:map><bldg:WallSurface/><BLDG:WallSurface/></local:map>,
+  <local:map><bldg:RoofSurface/><BLDG:RoofSurface/></local:map>,
+  <local:map><bldg:GroundSurface/><BLDG:GroundSurface/></local:map>,
+  <local:map><bldg:Room/><BLDG:Room/></local:map>,
+  <local:map><core:CityModel/><CORE:CityModel/></local:map>,
+  <local:map><bldg:BuildingInstallation/><BLDG:BuildingInstallation/></local:map>,
+  <local:map><bldg:BuildingFurniture/><BLDG:BuildingFurniture/></local:map>,
+  <local:map><bldg:Door/><BLDG:Door/></local:map>,
+  <local:map><bldg:Window/><BLDG:Window/></local:map>
+);
+
+declare function functx:capitalize-first ( $arg as xs:string? )  as xs:string? {
+   fn:concat(fn:upper-case(fn:substring($arg,1,1)), fn:substring($arg,2))
+ } ;
+
+declare option saxon:output "method=text";
+
+declare function local:rdf_type ($cityObj) {
+  for $classnameMapItem in $classnameMap
+    let $fromClass := $classnameMapItem/*[1]
+    let $toClass := $classnameMapItem/*[2]
+    where ($cityObj/local-name() = $fromClass/local-name() and fn:namespace-uri($cityObj) = fn:namespace-uri($fromClass))
+    return $toClass/name()
+};
+
+declare function local:get_prefix ($ns_uri as xs:string) {
+  for $classnameMapItem in $classnameMap
+    let $fromClass := $classnameMapItem/*[1]
+    let $toClass := $classnameMapItem/*[2] ## this row was absent
+    where ($ns_uri = fn:namespace-uri($fromClass))
+    return fn:namespace-uri($toClass) ## here it was fn:namespace-uri($fromClass)
+};
+
+declare function local:test ($property, $id as xs:string) {
+  let $propName := $property/name()
+  for $prop in $propName
+    construct {<{$id}> rdfs:label {$prop}}
+};
+
+declare function local:property ($genAttr, $id as xs:string) {
+    for $attr in $genAttr
+      let $genAttrName := ( $attr/@name, 
+                            $attr/gen:name/text()
+                          )
+
+      let $genAttrValue := $attr/gen:value/text()
+                           
+     let $genClassName := functx:capitalize-first(fn:substring-after(fn:string(fn:node-name($attr)),"gen:"))
+#     let $genClassRef  := fn:concat(fn:namespace-uri($attr)[1], $genClassName)
+     let $genClassRef  := fn:concat(local:get_prefix(fn:substring-before(fn:string(fn:node-name($attr)), ":")), $genClassName)
+     let $genAttrId    := $attr/@gml:id/string()
+
+     construct {
+#      <{$id}> rdfs:label {$genClassRef} .
+      {
+
+      if (($genAttrName eq "Name") or
+          ($genAttrName eq "LongName") or
+          ($genAttrName eq "BuildingAddress.Country") or
+          ($genAttrName eq "BuildingAddress.Town") or
+          ($genAttrName eq "BuildingAddress.Region") or
+          ($genAttrName eq "BuildingAddress.PostalCode") 
+          ) then local:simple_prop($genAttrName, $genAttrValue, $id)
+      else if (($genAttrName eq "FloorHeight") or
+               ($genAttrName eq "RoomArea"))
+            then local:struct_prop($genAttrName, $genAttrValue, $id)
+      else if (($genAttrName ne "Name") and
+              ($genAttrName ne "LongName") and
+              ($genAttrName ne "RoomArea") and
+              ($genAttrName ne "BuildingAddress.Country") and
+              ($genAttrName ne "BuildingAddress.Town") and
+              ($genAttrName ne "BuildingAddress.Region") and
+              ($genAttrName ne "BuildingAddress.PostalCode") and
+              ($genAttrName ne "FloorHeight")) then local:rdfprop_withId($genAttrName, $genAttrValue, $genClassRef, $genAttrId, $id) 
+      else ()
+      }
+      }
+};
+
+declare function local:simple_prop ($genAttrName, $genAttrValue, $id as xs:string) {
+      let $genAttrId  := fn:concat($id,fn:concat("/",$genAttrName))
+      let $genAttrNameAsProp := fn:lower-case($genAttrName)
+
+  for $prop $dt where {
+    values ($prop1       $prop                 $dt) {
+      # undef means the same as xsd:string
+      ("name"                           "rdfs:label"             undef)
+      ("longname"                       "GML:description"        undef)
+      ("buildingaddress.country"        "xAL:CountryName"        undef)
+      ("buildingaddress.town"           "xAL:Locatily"           undef)
+      ("buildingaddress.region"         "xAL:AdministrativeArea" undef)
+      ("buildingaddress.postalcode"     "xAl:PostalCode"         undef)
+  }
+    filter ($prop1 = $genAttrNameAsProp)
+  }
+  construct {<{$id}> <{$prop}> {$genAttrValue}^^<{$dt}>}
+};
+
+declare function local:struct_prop ($genAttrName, $genAttrValue, $id as xs:string) {
+# FloorHeight -> gml:LengthType
+  let $genAttrNameAsProp := fn:lower-case($genAttrName)
+  for $prop2 $class1 $prop3 $prop4 $class2 $dt where {
+    values ($prop1     $prop2           $class1              $prop3        $prop4        $class2         $dt) {
+    ("roomarea"      "COMMON:area"      "CORE:QualifiedArea" "CORE:area"   "/area"       "GML:Area"      "xsd:double")
+    ("floorheight"   "BLDG:roomHeight"  "BLDG:RoomHeight"    "BLDG:value"  "/roomHeight" "GML:Length"    "xsd:double")
+  }
+    filter ($prop1 = $genAttrNameAsProp)
+  }
+
+  let $genAttrId := fn:concat($id,$prop4)
+  let $targetClass := fn:concat($genAttrId, "/value")
+
+  construct {
+    <{$id}> <{$prop2}> <{$genAttrId}> .
+    <{$genAttrId}> a <{$class1}>;
+                   <{$prop3}> <{$targetClass}> .
+    <{$targetClass}> a <{$class2}> ;
+                   GML:value {$genAttrValue}^^<{$dt}>              
+  }
+};
+
+declare function local:coded_prop ($genAttrName, $genAttrValue, $id as xs:string) {
+      let $genAttrNameAsProp := fn:lower-case($genAttrName)
+      let $valuePrep := fn:iri-to-uri($genAttrValue)
+  for $prop2 $ref where {
+    values ($prop1     $prop2             $ref   ) {
+    ("roomusagedin277" "COMMON:usage"     "buildingRoomUsageValue/"  )
+  }
+    filter ($prop1 = $genAttrNameAsProp)
+  }
+  construct {<{$id}> <{$prop2}> <{fn:concat($ref,$valuePrep)}>}           
+};
+
+declare function local:rdfprop ($genAttrName, $genAttrValue, $genClassRef, $iter, $id as xs:string) {
+    let $genClassId := fn:concat($id,"/", $genClassRef, "/", $iter)
+    construct {
+      <{$id}> GML:genericAttribute <{$genClassId}> .
+      <{$genClassId}> a <{$genClassRef}>        ;
+                      GML:name {$genAttrName}   ;
+                      GML:value {$genAttrValue} .
+      }
+};
+
+declare function local:rdfprop_withId ($genAttrName, $genAttrValue, $genClassRef, $genAttrId, $id as xs:string) {
+  let $class := $genClassRef[1]
+    construct {
+      <{$id}> GML:genericAttribute <{$genAttrId}> .
+      <{$genAttrId}> a <{$class}>        ;
+                      GML:name {$genAttrName}   ;
+                      GML:value {$genAttrValue} .
+      }
+};
+
+declare function local:geom_compositesurface ($geom, $id as xs:string) {
+  #this function serializes geometries of gml:CompositeSurfaces and gml:Polygons as their parts
+
+  let $geometryURI    := fn:concat($id,"/geo")
+
+  let $polygons    := $geom/descendant::gml:Polygon
+  for $polygon at $count in $polygons
+    let $polygonURI    := if (fn:empty($polygon/@gml:id)) then fn:concat($id,"/geo/", $count) else fn:replace($polygon/@gml:id/string(),"^_","")
+    let $polygonSerialized  := if (fn:empty($polygon)) then () else XSPARQL:_serialize($polygon)
+    let $compositeSurfaceId := $polygon/ancestor::gml:CompositeSurface/@gml:id/string()
+
+    construct {
+      <{$id}> 
+          geo:hasDefaultGeometry <{$geometryURI}> .
+
+      <{$geometryURI}> a GML:CompositeSurface ;
+          GML:id {$compositeSurfaceId};
+          GML:surfaceMember <{$polygonURI}>.
+
+      <{$polygonURI}> a geo:Geometry;
+          geo:asGML {$polygonSerialized}^^geo:gmlLiteral .
+    }
+};
+
+declare function local:geom_multisurface ($geom, $id as xs:string) {
+  #this function serializes geometries of gml:MultiSurfaces and gml:Polygons as their parts
+
+  let $geometryURI    := fn:concat($id,"/geo")
+
+  let $polygons    := $geom/descendant::gml:Polygon
+  for $polygon at $count in $polygons
+    let $polygonURI    := if (fn:empty($polygon/@gml:id)) then fn:concat($id,"/geo/", $count) else fn:replace($polygon/@gml:id/string(),"^_","")
+    let $polygonSerialized  := if (fn:empty($polygon)) then () else XSPARQL:_serialize($polygon)
+    let $compositeSurfaceId := $polygon/ancestor::gml:MultiSurface/@gml:id/string()
+
+    construct {
+      <{$id}> 
+          geo:hasDefaultGeometry <{$geometryURI}> .
+
+      <{$geometryURI}> a GML:MultiSurface ;
+          GML:id {$compositeSurfaceId};
+          GML:surfaceMember <{$polygonURI}>.
+
+      <{$polygonURI}> a geo:Geometry;
+          geo:asGML {$polygonSerialized}^^geo:gmlLiteral .
+    }
+};
+
+
+########## main
+
+let $doc           := doc($input)/*
+# let $cityModelId   := fn:replace($doc/gml:name/string(),"^_","")
+
+for $cityObj in $doc//*[not(ancestor-or-self::gml:Polygon)]
+  let $cityObjectTypeNames := local:rdf_type($cityObj)
+  let $id              := fn:replace($cityObj/@gml:id/string(),"^_","")
+
+  let $geom     := ($cityObj/bldg:lod4Geometry    ,
+                    $cityObj/bldg:lod3Geometry    ,
+                    $cityObj/bldg:lod4MultiSurface,
+                    $cityObj/bldg:lod3MultiSurface,
+                    $cityObj/bldg:lod2MultiSurface,
+                    $cityObj/bldg:lod1MultiSurface,
+                    $cityObj/bldg:lod0MultiSurface)
+
+  let $genAttr  := ($cityObj/gen:stringAttribute , 
+                    $cityObj/gen:intAttribute    ,    
+                    $cityObj/gen:doubleAttribute , 
+                    $cityObj/gen:dateAttribute   ,   
+                    $cityObj/gen:uriAttribute    ,    
+                    $cityObj/gen:measureAttribute,
+               
+                    $cityObj/descendant::gen:StringAttribute ,
+                    $cityObj/descendant::gen:IntAttribute    ,
+                    $cityObj/descendant::gen:DoubleAttribute , 
+                    $cityObj/descendant::gen:DateAttribute   ,   
+                    $cityObj/descendant::gen:UriAttribute    ,    
+                    $cityObj/descendant::gen:MeasureAttribute
+                    )
+
+  for $cityObjectType in $cityObjectTypeNames
+    let $ancestor    := $cityObj/ancestor::*[@gml:id][1]
+    let $ancestorId  := fn:replace($ancestor/@gml:id/string(),"^_","")
+
+    let $parentObj := $cityObj/parent::*[1]
+    let $parentPrefix := local:get_prefix(fn:namespace-uri($parentObj))
+    let $parentPrefixNotEmpty := if (fn:empty($parentPrefix)) then fn:prefix-from-QName(fn:QName("",$parentObj/name())) else $parentPrefix[1]
+    let $parentURI := fn:concat($parentPrefixNotEmpty,$parentObj/local-name())
+
+    #
+    #    ###  CityRDF conformant structure
+    #
+    construct {
+      <{$id}>
+        GML:id {$id};
+
+        rdf:type <{$cityObjectType}> .
+        <{$ancestorId}> <{$parentURI}> <{$id}> .
+
+      {
+        local:property($genAttr, $id)
+      # ,local:geom_compositesurface($geom, $id)
+        ,local:geom_multisurface($geom, $id)
+      }
+
+}
